@@ -7,12 +7,15 @@
 
 A minimal semantic word-guessing game built with **Streamlit**. Challenge yourself to find the secret word by exploring semantic relationships.
 
+[**Play Now →**](https://semword.streamlit.app/)
+
 ## Features
 
-- **Semantic Similarity**: Feedback based on cosine similarity (Cold, Warm, Hot, Very Hot).
-- **Intelligent Hints**: Reveal words that are semantically close to the target.
-- **Clean Interface**: A distraction-free, typography-focused design
-- **Fast Performance**: Powered by pre-computed word embeddings for instant similarity scoring.
+- **Semantic Similarity**: Feedback based on cosine similarity scores.
+- **Intelligent Hints**: Reveal nearby words to help you narrow down the target.
+- **Reveal Word**: Stuck? You can reveal the secret word to see how close you were.
+- **Clean Interface**: A distraction-free, typography-focused design.
+- **Fast Performance**: Powered by Pinecone vector search for instant similarity scoring.
 
 ## Screenshots
 
@@ -33,9 +36,10 @@ A minimal semantic word-guessing game built with **Streamlit**. Challenge yourse
 
 ## Tech Stack
 
-- **Frontend**: Streamlit
 - **Logic**: Python, NumPy, Scikit-learn
-- **Data**: Word embeddings (ConceptNet Numberbatch)
+- **Database**: Pinecone (Vector database for similarity search)
+- **Environment**: Python-dotenv
+- **Data**: ConceptNet Numberbatch word embeddings
 
 ## Setup
 
@@ -46,10 +50,17 @@ A minimal semantic word-guessing game built with **Streamlit**. Challenge yourse
 
 2. **Install dependencies**:
    ```bash
-   pip install streamlit numpy scikit-learn
+   pip install -r requirements.txt
    ```
 
-3. **Run the application**:
+3.  **Environment Setup**:
+    Create a `.env` file in the root directory and add your Pinecone API key:
+    ```env
+    PINECONE=your_api_key_here
+    ```
+    *Note: An index named `semword-index` is required in your Pinecone project.*
+
+4. **Run the application**:
    ```bash
    streamlit run app.py
    ```
@@ -60,6 +71,6 @@ I was experimenting with Vector Embeddings and Pinecone DB a week ago when the i
 
 I manually wrote the backend after a lot of experimentation and tinkering and setup a working prototype on Streamlit. After that I used Claude Code to improve the UI because I absolutely hate doing frontend design myself. 
 
-In order to speed up the backend I have dumped all the embeddings in a pickle file. I was using a text file previously and even considered using Pinecone DB at first but I eventually figured out a way to make it work locally. 
+In order to speed up the backend and handle search efficiently, I integrated **Pinecone DB**. This allows for extremely fast similarity scoring and vector search directly in the cloud, removing the need for heavy local embedding files. 
 
 I hope you like the project, any contributions to improve the project are welcome.
