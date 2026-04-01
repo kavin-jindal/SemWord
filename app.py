@@ -132,8 +132,7 @@ col_nav1, col_nav2 = st.columns([1, 1])
 with col_nav1:
     st.markdown('<span style="font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:0.08em;text-transform:uppercase;">semword · by kavin jindal</span>', unsafe_allow_html=True)
 with col_nav2:
-    if st.button("how to play →", use_container_width=True):
-        st.page_link("pages/how_to_play.py", label="How to Play")
+    st.page_link("pages/how_to_play.py", label="how to play →")
 if "word" not in st.session_state:
     st.session_state.word = main.gen_word()
 if "guesses" not in st.session_state:
