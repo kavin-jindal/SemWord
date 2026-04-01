@@ -1,3 +1,8 @@
+<p>
+  <img src="logo.png" width="40%" />
+  
+</p>
+
 # Semword
 
 A minimal semantic word-guessing game built with **Streamlit**. Challenge yourself to find the secret word by exploring semantic relationships.
