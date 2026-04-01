@@ -3,6 +3,10 @@ import main
 from pinecone import Pinecone
 import os
 from dotenv import load_dotenv
+import os
+st.write("CWD:", os.getcwd())
+st.write("FILES:", os.listdir())
+st.write("PAGES EXISTS:", os.path.exists("pages"))
 pc = Pinecone(api_key=os.getenv("PINECONE"))
 index = pc.Index("semword-index")
 
