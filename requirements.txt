@@ -1,4 +1,4 @@
-streamlit
+streamlit==1.33.0
 numpy
 scikit-learn
 pinecone
