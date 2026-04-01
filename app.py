@@ -1,8 +1,18 @@
 import streamlit as st
 import main
+from pinecone import Pinecone
+import os
+from dotenv import load_dotenv
+pc = Pinecone(api_key=os.getenv("PINECONE"))
+index = pc.Index("semword-index")
 
 st.set_page_config(page_title="Semword", layout="centered")
-
+st.logo(
+    "logo.png",
+    link="https://streamlit.io/gallery",
+    icon_image="logo.png",
+)
+st.set_page_config(page_icon="logo.png")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600&display=swap');
@@ -115,12 +125,7 @@ def footer():
         </span>
     </div>
     """, unsafe_allow_html=True)
-@st.cache_resource
-def load():
-    with st.spinner("loading embeddings..."):
-        return main.load()
 
-dict_embed = load()
 col_nav1, col_nav2 = st.columns([1, 1])
 with col_nav1:
     st.markdown('<span style="font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:0.08em;text-transform:uppercase;">semword · by kavin jindal</span>', unsafe_allow_html=True)
@@ -178,7 +183,7 @@ if not st.session_state.won and not st.session_state.revealed:
             disabled=hints_exhausted
         ):
             if not st.session_state.all_hints:
-                st.session_state.all_hints = main.get_hints(dict_embed, word, n=MAX_HINTS)
+                st.session_state.all_hints = main.get_hints(word, n=MAX_HINTS)
             st.session_state.hint_index += 1
             st.session_state.hints_used += 1
             st.toast(f"hint {st.session_state.hint_index} of {MAX_HINTS} revealed!")
@@ -250,10 +255,13 @@ else:
     user_in = st.chat_input("type a word...")
     if user_in:
         user_in = user_in.strip().lower()
-        if user_in not in dict_embed:
+        
+        result = index.fetch(ids=[user_in.lower()])
+
+        if not result["vectors"]:
             st.error("word not found — try another")
         else:
-            label = main.cos(dict_embed[word.lower()], dict_embed[user_in])
+            label = main.cos(main.get_vector(word.lower()), main.get_vector(user_in.lower()))
             st.session_state.guesses[user_in] = label
             if label == "Done!":
                 st.session_state.won = True

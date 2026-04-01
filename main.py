@@ -9,7 +9,18 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 import pickle
-
+from pinecone import Pinecone
+from pinecone import ServerlessSpec
+from dotenv import load_dotenv
+import os
+load_dotenv() 
+pc = Pinecone(api_key=os.getenv("PINECONE"))
+'''pc.create_index(name="semword-index", dimension=300, 
+spec=ServerlessSpec(
+cloud="aws",
+region="us-east-1"
+))'''
+index = pc.Index("semword-index")
 def gen_word():
     wordlist = open('wordlist.txt', 'r')
     wd = wordlist.readlines()
@@ -17,7 +28,14 @@ def gen_word():
     word = random.choice(lines)
     return word
 
+def get_vector(term):
+    
+    x= index.fetch(ids=[term])
+    y=(x['vectors'].items())
+    for vector_id, vector_data in y:
+        return (vector_data['values'])
 def load():
+    index = pc.Index("semword-index")
     with open("embeddings_common.pkl", "rb") as f:
         return pickle.load(f)
     '''vectors = open('embeddings_common.pkl', 'rb', errors="ignore")    
@@ -31,7 +49,7 @@ def load():
         pickle.dump(dict_embed, vectors)
     return dict_embed'''
 def cos(word, user_word):
-    z = cosine_similarity(word.reshape(1, -1), user_word.reshape(1, -1))
+    z = cosine_similarity(np.array(word).reshape(1, -1), np.array(user_word).reshape(1, -1))
     if z < 0.4: 
         return "Cold"
     elif z > 0.4 and z < 0.6:
@@ -47,24 +65,20 @@ def cos(word, user_word):
     else:
         return "Error occurred"
     
-def get_hints(dict_embed, word, n=5):
-    '''secret = dict_embed[word.lower()]
-    #print(secret)
-    hints = []
-    for i in dict_embed:
-        h_word = dict_embed[i]
-        sim = cos(h_word, secret)
-        if sim=="Very Hot" or sim=="Hot":
-            print(i)
-            hints.append(i)
-        
-    return random.choice(hints)'''
-    words = list(dict_embed.keys())
-    matrix = np.stack([dict_embed[w] for w in words])
-    secret_vec = dict_embed[word.lower()].reshape(1, -1)
-    scores = cosine_similarity(secret_vec, matrix)[0]
-    top_indices = np.argsort(scores)[::-1][1:n+1]
-    return [words[i] for i in top_indices]
+def get_hints(word, n=5):
+    secret_vec = get_vector(word.lower())
+
+    matches = index.query(
+        vector=secret_vec,
+        top_k=500
+    )
+
+    hints = [
+        m["id"] for m in matches["matches"]
+        if m["id"] != word.lower() and m["score"] > 0.6
+    ]
+
+    return random.sample(hints, min(n, len(hints)))
 
 '''def find_vector(term):
     
