@@ -1,7 +1,16 @@
 import streamlit as st
-if st.button("← back to game"):
-    st.switch_page("app.py")
-st.set_page_config(page_title="How to Play — Semword", layout="centered")
+
+# MUST be first Streamlit call
+st.set_page_config(
+    page_title="How to Play — Semword",
+    layout="centered"
+)
+
+# Stable navigation (no switch_page)
+st.markdown(
+    '<a href="/" target="_self" style="text-decoration:none;font-size:14px;">← back to game</a>',
+    unsafe_allow_html=True
+)
 
 st.markdown("""
 <style>
@@ -151,4 +160,3 @@ st.markdown("""
     <span class="footer-right">built by <a href="https://deckrdev.vercel.app/kavinjindal" target="_blank">kavin jindal</a></span>
 </div>
 """, unsafe_allow_html=True)
-
