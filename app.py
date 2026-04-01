@@ -4,9 +4,7 @@ from pinecone import Pinecone
 import os
 from dotenv import load_dotenv
 import os
-st.write("CWD:", os.getcwd())
-st.write("FILES:", os.listdir())
-st.write("PAGES EXISTS:", os.path.exists("pages"))
+
 pc = Pinecone(api_key=os.getenv("PINECONE"))
 index = pc.Index("semword-index")
 
@@ -135,7 +133,7 @@ with col_nav1:
     st.markdown('<span style="font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:0.08em;text-transform:uppercase;">semword · by kavin jindal</span>', unsafe_allow_html=True)
 with col_nav2:
     if st.button("how to play →", use_container_width=True):
-        st.switch_page("pages/how_to_play.py")
+        st.page_link("pages/how_to_play.py", label="How to Play")
 if "word" not in st.session_state:
     st.session_state.word = main.gen_word()
 if "guesses" not in st.session_state:
