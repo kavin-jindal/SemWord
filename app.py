@@ -4,15 +4,7 @@ from pinecone import Pinecone
 import os
 from dotenv import load_dotenv
 import os
-import os
-import streamlit as st
 
-st.write("CWD:", os.getcwd())
-st.write("FILES:", os.listdir())
-if os.path.exists("pages"):
-    st.write("PAGES:", os.listdir("pages"))
-else:
-    st.write("NO PAGES DIR")
 pc = Pinecone(api_key=os.getenv("PINECONE"))
 index = pc.Index("semword-index")
 
