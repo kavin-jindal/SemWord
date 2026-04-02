@@ -157,6 +157,6 @@ st.markdown("""
 st.markdown("""
 <div class="footer">
     <span class="footer-left">semword</span>
-    <span class="footer-right">built by <a href="https://deckrdev.vercel.app/kavinjindal" target="_blank">kavin jindal</a></span>
+    <span class="footer-right">built by <a href="https://deckrdev.vercel.app/kavin-jindal" target="_blank">kavin jindal</a></span>
 </div>
 """, unsafe_allow_html=True)
